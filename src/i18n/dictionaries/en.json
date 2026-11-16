@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "title": "Portfolio",
+    "description": "Data, BI and AI — projects, stack and contact."
+  },
+  "nav": {
+    "about": "About",
+    "stack": "Stack",
+    "projects": "Projects",
+    "contact": "Contact",
+    "resume": "Resume",
+    "menu": "Open menu",
+    "close": "Close menu"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "language": "Language",
+  "hero": {
+    "available": "Open to projects",
+    "unavailable": "Fully booked",
+    "cta_resume": "Download resume",
+    "cta_projects": "See projects"
+  },
+  "stats": {
+    "projects": "projects",
+    "technologies": "technologies",
+    "years": "years of experience"
+  },
+  "sections": {
+    "about": "About",
+    "stack": "Stack",
+    "projects": "Projects",
+    "experience": "Experience",
+    "contact": "Contact"
+  },
+  "categories": {
+    "languages": "Languages",
+    "data": "Data engineering",
+    "bi": "BI & Visualization",
+    "ai": "AI & Machine Learning",
+    "cloud": "Cloud & Databases",
+    "tools": "Tools",
+    "other": "Other"
+  },
+  "projects": {
+    "demo": "Live demo",
+    "code": "Code",
+    "details": "View details",
+    "featured": "Featured",
+    "photos": "photos",
+    "close": "Close",
+    "prev": "Previous",
+    "next": "Next",
+    "empty": "Coming soon."
+  },
+  "experience": {
+    "present": "Present"
+  },
+  "contact": {
+    "title": "Let's talk?",
+    "subtitle": "Open to opportunities in data, BI and AI.",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "type": "Project type",
+      "types": {
+        "bi": "Dashboard / BI",
+        "data": "Data engineering",
+        "ai": "AI / Machine Learning",
+        "other": "Other"
+      },
+      "message": "Message",
+      "message_placeholder": "Tell me a bit about the project, timeline and goal.",
+      "submit": "Send message",
+      "sending": "Sending…",
+      "success": "Message sent! I will get back to you soon.",
+      "error_invalid": "Please check the fields: name, a valid email and a message of at least 10 characters.",
+      "error_rate": "Too many messages in a short time. Try again later or use the links.",
+      "error_server": "Could not send right now. Try again or use the links.",
+      "or_direct": "Or reach out directly"
+    }
+  },
+  "footer": {
+    "built": "Next.js · Supabase · Vercel"
+  },
+  "stack": {
+    "used_in": "Used in",
+    "close": "Close",
+    "details": "Learn more about",
+    "empty": "More details coming soon."
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "title": "Portfólio",
+    "description": "Dados, BI e IA — projetos, stack e contato."
+  },
+  "nav": {
+    "about": "Sobre",
+    "stack": "Stack",
+    "projects": "Projetos",
+    "contact": "Contato",
+    "resume": "Currículo",
+    "menu": "Abrir menu",
+    "close": "Fechar menu"
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Claro",
+    "dark": "Escuro"
+  },
+  "language": "Idioma",
+  "hero": {
+    "available": "Disponível para projetos",
+    "unavailable": "Agenda fechada",
+    "cta_resume": "Baixar currículo",
+    "cta_projects": "Ver projetos"
+  },
+  "stats": {
+    "projects": "projetos",
+    "technologies": "tecnologias",
+    "years": "anos de experiência"
+  },
+  "sections": {
+    "about": "Sobre",
+    "stack": "Stack",
+    "projects": "Projetos",
+    "experience": "Experiência",
+    "contact": "Contato"
+  },
+  "categories": {
+    "languages": "Linguagens",
+    "data": "Engenharia de dados",
+    "bi": "BI & Visualização",
+    "ai": "IA & Machine Learning",
+    "cloud": "Cloud & Bancos",
+    "tools": "Ferramentas",
+    "other": "Outros"
+  },
+  "projects": {
+    "demo": "Ver online",
+    "code": "Código",
+    "details": "Ver detalhes",
+    "featured": "Destaque",
+    "photos": "fotos",
+    "close": "Fechar",
+    "prev": "Anterior",
+    "next": "Próxima",
+    "empty": "Em breve."
+  },
+  "experience": {
+    "present": "Atual"
+  },
+  "contact": {
+    "title": "Vamos conversar?",
+    "subtitle": "Aberto a oportunidades em dados, BI e IA.",
+    "form": {
+      "name": "Nome",
+      "email": "E-mail",
+      "type": "Tipo de projeto",
+      "types": {
+        "bi": "Dashboard / BI",
+        "data": "Engenharia de dados",
+        "ai": "IA / Machine Learning",
+        "other": "Outro"
+      },
+      "message": "Mensagem",
+      "message_placeholder": "Conte um pouco sobre o projeto, prazo e objetivo.",
+      "submit": "Enviar mensagem",
+      "sending": "Enviando…",
+      "success": "Mensagem enviada! Respondo em breve.",
+      "error_invalid": "Confira os campos: nome, e-mail válido e mensagem com pelo menos 10 caracteres.",
+      "error_rate": "Muitas mensagens em pouco tempo. Tente de novo mais tarde ou use os links ao lado.",
+      "error_server": "Não foi possível enviar agora. Tente de novo ou use os links ao lado.",
+      "or_direct": "Ou fale direto"
+    }
+  },
+  "footer": {
+    "built": "Next.js · Supabase · Vercel"
+  },
+  "stack": {
+    "used_in": "Usado em",
+    "close": "Fechar",
+    "details": "Saiba mais sobre",
+    "empty": "Em breve, mais detalhes."
+  }
+}

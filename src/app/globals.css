@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+/* dark: aplica quando <html data-theme="dark"> (definido pelo script de tema) */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ---------- Tokens: Navy Data Instrument ---------- */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f6f8fc;
+  --surface: #ffffff;
+  --surface-2: #eef2fa;
+  --line: #dde3f0;
+  --fg: #0b1530;
+  --muted: #56627e;
+  --accent: #2563eb;
+  --accent-solid: #2563eb; /* fundo de botão com texto branco (AA) */
+  --accent-2: #0b7a70;
+  --glow: rgba(37, 99, 235, 0.14);
+  --grid-dot: rgba(11, 21, 48, 0.09);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0a1020;
+  --surface: #101a33;
+  --surface-2: #142142;
+  --line: #1e2b4d;
+  --fg: #e6ecfa;
+  --muted: #8a97b8;
+  --accent: #4c8dff;
+  --accent-solid: #2f6df0;
+  --accent-2: #2dd4bf;
+  --glow: rgba(76, 141, 255, 0.22);
+  --grid-dot: rgba(230, 236, 250, 0.07);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-solid: var(--accent-solid);
+  --color-accent-2: var(--accent-2);
+
+  --font-display: var(--font-bricolage);
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-jetbrains);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent-solid);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Fundo assinatura: grade pontilhada + brilho azul no topo */
+.bg-instrument {
+  background-image:
+    radial-gradient(60rem 30rem at 70% -10%, var(--glow), transparent 70%),
+    radial-gradient(var(--grid-dot) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    22px 22px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Entrada escalonada */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise {
+  animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Revelar ao rolar (só CSS; navegadores sem suporte mostram direto) */
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+}
+
+/* Sparkline do hero: desenha a linha */
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.spark-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 1.6s 0.4s cubic-bezier(0.6, 0, 0.2, 1) forwards;
+}
+dialog[open] {
+  animation: rise 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Caixa de entrada do painel: aviso inferior e abertura da mensagem */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.toast-in {
+  animation: toast-in 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes reader-in {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.reader-in {
+  animation: reader-in 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
