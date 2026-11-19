@@ -32,6 +32,11 @@ export async function verifyTurnstile(token: string, ip: string | null): Promise
     console.error("turnstile: TURNSTILE_SECRET_KEY não definida (veja .env.example)");
     return false;
   }
+  // Chave de teste aprova qualquer token: em produção seria o mesmo que não ter captcha
+  if (isTestSecret(secret) && process.env.VERCEL_ENV === "production") {
+    console.error("turnstile: chave de TESTE configurada em produção; envios recusados");
+    return false;
+  }
   if (!token || token.length > 2048) return false;
 
   const body = new URLSearchParams({ secret, response: token });
