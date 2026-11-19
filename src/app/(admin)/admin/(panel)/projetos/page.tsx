@@ -14,7 +14,7 @@ export default async function ProjectsPage() {
     <>
       <PageHeader
         title="Projetos"
-        description="O 1º projeto em destaque vira o card largo. Arraste pelo ⠿ para ordenar; clique para editar."
+        description="No site, destaques aparecem primeiro como cards largos, alternando o lado, cada um pareado com um projeto normal (sem par, ficam em tamanho normal com o selo). Arraste pelo ⠿ para ordenar; clique para editar."
       />
       <SortableProjects
         projects={(projects ?? []).map((p) => ({

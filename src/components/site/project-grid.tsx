@@ -78,20 +78,45 @@ function LinkButtons({ p, labels }: { p: ProjectCardData; labels: Labels }) {
   );
 }
 
+type Slot = { p: ProjectCardData; wide: boolean; flip: boolean };
+
+/**
+ * Zigue-zague editorial: cada destaque vira um card largo (2 colunas) pareado
+ * com um projeto normal, alternando o lado a cada linha. A ordem do DOM já é a
+ * ordem visual no desktop (tab/leitor de tela seguem o que se vê). Destaques
+ * sem par ficam em tamanho normal, só com o selo, para não abrir buracos.
+ */
+function arrange(items: ProjectCardData[]): Slot[] {
+  const featured = items.filter((p) => p.featured);
+  const regular = items.filter((p) => !p.featured);
+  const pairs = Math.min(featured.length, regular.length);
+  const slots: Slot[] = [];
+
+  for (let k = 0; k < pairs; k++) {
+    const flip = k % 2 === 1;
+    const wide: Slot = { p: featured[k], wide: true, flip };
+    const side: Slot = { p: regular[k], wide: false, flip: false };
+    slots.push(...(flip ? [side, wide] : [wide, side]));
+  }
+  for (const p of featured.slice(pairs)) slots.push({ p, wide: false, flip: false });
+  for (const p of regular.slice(pairs)) slots.push({ p, wide: false, flip: false });
+  return slots;
+}
+
 export function ProjectGrid({ items, labels }: { items: ProjectCardData[]; labels: Labels }) {
   const [open, setOpen] = useState<ProjectCardData | null>(null);
 
   return (
     <>
-      <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {items.map((p, i) => {
-          const wide = i === 0 && p.featured;
+      {/* dense: no md (2 colunas) o card largo ocupa a linha toda e o normal seguinte sobe para o vão */}
+      <ul className="grid gap-5 md:grid-flow-dense md:grid-cols-2 lg:grid-cols-3">
+        {arrange(items).map(({ p, wide, flip }) => {
           return (
             <li
               key={p.id}
               onMouseMove={spotlight}
               className={`reveal group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-surface/70 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-accent/60 has-[:focus-visible]:border-accent ${
-                wide ? "md:col-span-2 md:flex-row" : ""
+                wide ? `md:col-span-2 ${flip ? "md:flex-row-reverse" : "md:flex-row"}` : ""
               }`}
             >
               {/* luz que segue o mouse */}
@@ -132,7 +157,7 @@ export function ProjectGrid({ items, labels }: { items: ProjectCardData[]; label
                     {p.title.slice(0, 1)}
                   </span>
                 )}
-                {wide && (
+                {p.featured && (
                   <span className="absolute top-3 left-3 rounded-full bg-accent-2 px-2.5 py-1 font-mono text-[11px] font-semibold tracking-[0.12em] text-[#04201c] uppercase">
                     {labels.featured}
                   </span>
@@ -159,6 +184,12 @@ export function ProjectGrid({ items, labels }: { items: ProjectCardData[]; label
                     </button>
                   </h3>
                   {p.summary && <p className="mt-1.5 text-sm text-muted">{p.summary}</p>}
+                  {/* o card largo tem espaço: antecipa a descrição (completa no modal) */}
+                  {wide && p.description && (
+                    <p className="mt-3 hidden text-sm leading-relaxed text-fg/80 md:line-clamp-3">
+                      {p.description}
+                    </p>
+                  )}
                 </div>
                 <TechList techs={p.techs} max={wide ? 6 : 4} />
                 <div className="mt-auto pt-1">
