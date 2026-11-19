@@ -6,7 +6,8 @@ import { deleteTechnology, saveTechnology } from "../../actions";
 import { EditorForm } from "@/components/admin/editor-form";
 import type { EditorProps } from "@/components/admin/sortable-list";
 import { Field, inputCls, LocalizedField, Toggle } from "@/components/admin/ui";
-import { TechIcon, techCategories, techIcons } from "@/lib/tech-icons";
+import { TechIcon, techCategories } from "@/lib/tech-icons";
+import { IconPicker, type IconMode } from "./icon-picker";
 
 export const categoryLabels: Record<string, string> = {
   languages: "Linguagens",
@@ -16,8 +17,6 @@ export const categoryLabels: Record<string, string> = {
   cloud: "Cloud & Bancos",
   tools: "Ferramentas",
 };
-
-const catalog = Object.entries(techIcons).sort((a, b) => a[1].label.localeCompare(b[1].label));
 
 /**
  * Formulário de uma tecnologia. Só é montado quando o item está aberto,
@@ -33,6 +32,10 @@ export function TechEditor({
   nextOrder?: number;
 } & EditorProps) {
   const [icon, setIcon] = useState(tech?.icon ?? "");
+  const [iconUrl, setIconUrl] = useState(tech?.icon_url ?? "");
+  const [mode, setMode] = useState<IconMode>(
+    tech?.icon_url ? "upload" : tech && !tech.icon ? "initial" : "catalog",
+  );
   const [name, setName] = useState(tech?.name ?? "");
   const [category, setCategory] = useState(tech?.category ?? "tools");
   const [color, setColor] = useState(tech?.color ?? "");
@@ -49,34 +52,17 @@ export function TechEditor({
     >
       {!tech && <input type="hidden" name="sort_order" value={nextOrder ?? 0} />}
 
-      <div className="grid grid-cols-[auto_minmax(0,1fr)] items-end gap-3 sm:grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.9fr)]">
+      <div className="grid grid-cols-[auto_minmax(0,1fr)] items-end gap-3 sm:grid-cols-[auto_minmax(0,1fr)_minmax(0,0.9fr)]">
         <div className="grid size-10 place-items-center rounded-lg border border-line bg-bg" aria-hidden>
-          <TechIcon icon={icon || null} color={color || null} name={name || "?"} className="size-5" />
+          <TechIcon
+            icon={mode === "catalog" ? icon || null : null}
+            iconUrl={mode === "upload" ? iconUrl || null : null}
+            color={color || null}
+            name={name || "?"}
+            className="size-5"
+          />
         </div>
-        <Field label="Logo (catálogo)">
-          <select
-            name="icon"
-            value={icon}
-            onChange={(e) => {
-              const key = e.target.value;
-              setIcon(key);
-              const def = techIcons[key];
-              if (def && !tech) {
-                if (!name) setName(def.label);
-                setCategory(def.category);
-              }
-            }}
-            className={inputCls}
-          >
-            <option value="">— sem logo (inicial) —</option>
-            {catalog.map(([key, def]) => (
-              <option key={key} value={key}>
-                {def.label}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label="Nome exibido" className="col-span-2 sm:col-span-1">
+        <Field label="Nome exibido">
           <input
             name="name"
             value={name}
@@ -103,6 +89,25 @@ export function TechEditor({
       </div>
 
       <div className="mt-4">
+        <IconPicker
+          mode={mode}
+          onMode={setMode}
+          icon={icon}
+          onPick={(key, def) => {
+            setIcon(key);
+            if (!tech) {
+              if (!name) setName(def.label);
+              setCategory(def.category);
+            }
+          }}
+          iconUrl={iconUrl}
+          onUpload={setIconUrl}
+          name={name}
+          color={color}
+        />
+      </div>
+
+      <div className="mt-4">
         <LocalizedField
           name="description"
           label="Sobre a tecnologia (aparece ao clicar na Stack)"
@@ -119,7 +124,10 @@ export function TechEditor({
           label="Mostrar na seção Stack"
           defaultChecked={tech?.show_in_stack ?? true}
         />
-        <label className="inline-flex items-center gap-2 text-xs text-muted">
+        <label
+          className={`items-center gap-2 text-xs whitespace-nowrap text-muted ${mode === "upload" ? "hidden" : "inline-flex"}`}
+          title="Não se aplica a imagem própria"
+        >
           Cor personalizada
           <span
             className="size-4 rounded-full border border-line"

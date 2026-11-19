@@ -9,6 +9,7 @@ export type StackItem = {
   id: string;
   name: string;
   icon: string | null;
+  icon_url: string | null;
   color: string | null;
   description: string;
   projects: string[];
@@ -40,7 +41,13 @@ export function StackGrid({ groups, labels }: { groups: StackGroup[]; labels: La
                     aria-haspopup="dialog"
                     className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-line bg-bg/60 px-3 py-1.5 text-sm transition-[border-color,transform,box-shadow] hover:-translate-y-0.5 hover:border-accent/60 hover:shadow-[0_8px_24px_-12px_var(--glow)]"
                   >
-                    <TechIcon icon={t.icon} color={t.color} name={t.name} className="size-[18px]" />
+                    <TechIcon
+                      icon={t.icon}
+                      iconUrl={t.icon_url}
+                      color={t.color}
+                      name={t.name}
+                      className="size-[18px]"
+                    />
                     {t.name}
                   </button>
                 </li>
@@ -104,7 +111,13 @@ function TechDialog({
           <div className="relative p-6 pt-7">
             <div className="flex items-center gap-4">
               <div className="grid size-16 shrink-0 place-items-center rounded-2xl border border-line bg-bg/70 shadow-[0_12px_32px_-14px_var(--brand)]">
-                <TechIcon icon={item.icon} color={item.color} name={item.name} className="size-9" />
+                <TechIcon
+                  icon={item.icon}
+                  iconUrl={item.icon_url}
+                  color={item.color}
+                  name={item.name}
+                  className="size-9"
+                />
               </div>
               <div className="min-w-0">
                 <p className="font-mono text-[11px] tracking-[0.2em] text-muted uppercase">{data.category}</p>

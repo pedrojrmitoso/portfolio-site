@@ -11,7 +11,7 @@ type Project = Tables<"projects"> & {
   project_images: { url: string; alt: Json; sort_order: number }[];
   project_technologies: { technology_id: string }[];
 };
-type Tech = Pick<Tables<"technologies">, "id" | "name" | "icon" | "color" | "category">;
+type Tech = Pick<Tables<"technologies">, "id" | "name" | "icon" | "icon_url" | "color" | "category">;
 
 const categoryLabels: Record<string, string> = {
   languages: "Linguagens",
@@ -133,7 +133,13 @@ export function ProjectForm({
                         className="peer sr-only"
                       />
                       <span className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-bg px-2.5 py-1.5 text-sm transition-colors peer-checked:border-accent peer-checked:bg-accent/15 peer-focus-visible:outline-2 peer-focus-visible:outline-accent">
-                        <TechIcon icon={t.icon} color={t.color} name={t.name} className="size-4" />
+                        <TechIcon
+                          icon={t.icon}
+                          iconUrl={t.icon_url}
+                          color={t.color}
+                          name={t.name}
+                          className="size-4"
+                        />
                         {t.name}
                       </span>
                     </label>

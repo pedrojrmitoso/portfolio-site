@@ -4,13 +4,14 @@ import type { Dictionary } from "@/i18n/get-dictionary";
 import type { Locale } from "@/i18n/config";
 import type { Portfolio } from "@/lib/data";
 import { tr } from "@/lib/i18n-text";
+import { resumeHref } from "@/lib/resume";
 import { SocialIcon, socialPlatforms } from "@/lib/social-icons";
 
 export function Hero({ data, dict, locale }: { data: Portfolio; dict: Dictionary; locale: Locale }) {
   const { profile, links, stats } = data;
   const name = profile?.full_name || "—";
   const role = tr(profile?.role, locale);
-  const resume = tr(profile?.resume_url, locale);
+  const resume = resumeHref(tr(profile?.resume_url, locale), locale);
   const available = profile?.available ?? false;
 
   const metrics = [

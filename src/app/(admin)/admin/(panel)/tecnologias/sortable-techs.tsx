@@ -20,7 +20,13 @@ function Summary({ tech }: { tech: Tech }) {
           tech.show_in_stack ? "" : "opacity-50 grayscale"
         }`}
       >
-        <TechIcon icon={tech.icon} color={tech.color} name={tech.name} className="size-[18px]" />
+        <TechIcon
+          icon={tech.icon}
+          iconUrl={tech.icon_url}
+          color={tech.color}
+          name={tech.name}
+          className="size-[18px]"
+        />
       </span>
       <RowText title={tech.name} subtitle={categoryLabels[tech.category] ?? tech.category} />
       <span className="hidden shrink-0 items-center gap-1.5 sm:flex">

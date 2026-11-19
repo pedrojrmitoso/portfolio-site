@@ -3,13 +3,15 @@
 import { createHash } from "node:crypto";
 import { headers } from "next/headers";
 import { after } from "next/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createPublicClient } from "@/lib/supabase/public";
 import { notifyNewMessage, projectTypes, type ProjectType } from "@/lib/contact-notify";
 import { hasLocale } from "@/i18n/config";
 
 export type ContactState = { status: "ok" } | { status: "error"; code: "invalid" | "rate" | "server" } | null;
 
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/** Rígido de propósito: nada de ?, &, = ou # (viram parâmetros no mailto do painel). Igual à migration 0007. */
+const EMAIL = /^[a-z0-9._+-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/;
 /** Envio mais rápido que isso depois de abrir a página é robô. */
 const MIN_FILL_MS = 3000;
 
@@ -40,11 +42,12 @@ export async function sendContactMessage(_: ContactState, fd: FormData): Promise
   }
 
   const h = await headers();
-  const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip") || "";
+  // x-real-ip é definido pela Vercel; o 1º valor de x-forwarded-for pode vir do cliente
+  const ip = h.get("x-real-ip")?.trim() || h.get("x-forwarded-for")?.split(",").pop()?.trim() || "";
   const ipHash = ip ? createHash("sha256").update(`contact:${ip}`).digest("hex") : null;
 
-  const supabase = createPublicClient();
-  const { error } = await supabase.rpc("submit_contact_message", {
+  // Chave secreta: a função não é pública (migration 0009), então o hash do IP vem sempre daqui
+  const { error } = await createAdminClient().rpc("submit_contact_message", {
     p_name: name,
     p_email: email,
     p_project_type: projectType,
@@ -60,7 +63,7 @@ export async function sendContactMessage(_: ContactState, fd: FormData): Promise
 
   // E-mail depois da resposta: o visitante não espera, e uma falha no envio não perde a mensagem
   after(async () => {
-    const { data: profile } = await supabase.from("profile").select("email").eq("id", 1).maybeSingle();
+    const { data: profile } = await createPublicClient().from("profile").select("email").eq("id", 1).maybeSingle();
     await notifyNewMessage({ name, email, projectType, message, locale }, profile?.email ?? null).catch((e) =>
       console.error("contact notify:", e),
     );

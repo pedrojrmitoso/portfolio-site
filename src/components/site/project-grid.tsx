@@ -17,7 +17,7 @@ export type ProjectCardData = {
   demo: string | null;
   repo: string | null;
   featured: boolean;
-  techs: { id: string; name: string; icon: string | null; color: string | null }[];
+  techs: { id: string; name: string; icon: string | null; icon_url: string | null; color: string | null }[];
 };
 
 type Labels = Dictionary["projects"];
@@ -38,7 +38,7 @@ function TechList({ techs, max }: { techs: ProjectCardData["techs"]; max?: numbe
           key={t.id}
           className="inline-flex items-center gap-1.5 rounded-md border border-line bg-bg/60 px-2.5 py-1 text-xs"
         >
-          <TechIcon icon={t.icon} color={t.color} name={t.name} className="size-4" />
+          <TechIcon icon={t.icon} iconUrl={t.icon_url} color={t.color} name={t.name} className="size-4" />
           {t.name}
         </li>
       ))}

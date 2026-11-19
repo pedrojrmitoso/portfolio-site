@@ -28,6 +28,7 @@ export function Stack({ data, dict, locale }: { data: Portfolio; dict: Dictionar
           id: t.id,
           name: t.name,
           icon: t.icon,
+          icon_url: t.icon_url,
           color: t.color,
           description: tr(t.description, locale),
           projects: usedIn.get(t.id) ?? [],

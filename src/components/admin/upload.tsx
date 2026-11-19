@@ -21,7 +21,7 @@ function slugify(name: string) {
 }
 
 /** Envia direto do navegador para o Supabase Storage (RLS: só admin). */
-async function uploadFile(file: File, bucket: Bucket, folder: string) {
+export async function uploadFile(file: File, bucket: Bucket, folder: string) {
   const supabase = getBrowserClient();
   const path = `${folder}/${Date.now()}-${slugify(file.name)}`;
   const { error } = await supabase.storage.from(bucket).upload(path, file, {

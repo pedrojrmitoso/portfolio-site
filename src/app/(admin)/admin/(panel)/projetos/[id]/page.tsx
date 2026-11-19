@@ -13,7 +13,7 @@ export default async function ProjectEditPage({ params, searchParams }: PageProp
   if (!isNew && !UUID.test(id)) notFound();
 
   const [{ data: technologies }, projectRes, { data: last }] = await Promise.all([
-    supabase.from("technologies").select("id, name, icon, color, category").order("sort_order"),
+    supabase.from("technologies").select("id, name, icon, icon_url, color, category").order("sort_order"),
     isNew
       ? Promise.resolve({ data: null })
       : supabase

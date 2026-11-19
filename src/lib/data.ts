@@ -6,7 +6,7 @@ export const PORTFOLIO_TAG = "portfolio";
 
 export type Technology = Pick<
   Tables<"technologies">,
-  "id" | "name" | "icon" | "color" | "category" | "show_in_stack" | "sort_order"
+  "id" | "name" | "icon" | "icon_url" | "color" | "category" | "show_in_stack" | "sort_order"
 > & { description?: Tables<"technologies">["description"] };
 
 export type Project = Tables<"projects"> & {
@@ -33,7 +33,7 @@ export async function getPortfolio(): Promise<Portfolio> {
   cacheTag(PORTFOLIO_TAG);
 
   const db = createPublicClient();
-  const techCols = "id,name,icon,color,category,show_in_stack,sort_order,description";
+  const techCols = "id,name,icon,icon_url,color,category,show_in_stack,sort_order,description";
 
   const [profile, links, technologies, projects, experiences] = await Promise.all([
     db.from("profile").select("*").eq("id", 1).maybeSingle(),
@@ -42,7 +42,7 @@ export async function getPortfolio(): Promise<Portfolio> {
     db
       .from("projects")
       .select(
-        "*, images:project_images(id,url,alt,sort_order), technologies(id,name,icon,color,category,show_in_stack,sort_order)",
+        "*, images:project_images(id,url,alt,sort_order), technologies(id,name,icon,icon_url,color,category,show_in_stack,sort_order)",
       )
       .eq("published", true)
       .order("sort_order"),

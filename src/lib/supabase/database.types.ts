@@ -25,6 +25,7 @@ type ContactMessageRow = {
   name: string;
   project_type: string;
   read: boolean;
+  deleted_at: string | null;
 };
 type ExperienceRow = {
   company: string;
@@ -85,6 +86,7 @@ type TechnologyRow = {
   created_at: string;
   description: Json;
   icon: string | null;
+  icon_url: string | null;
   id: string;
   name: string;
   show_in_stack: boolean;

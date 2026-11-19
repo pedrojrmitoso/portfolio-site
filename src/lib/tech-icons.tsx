@@ -1,4 +1,5 @@
 import type { ComponentType, CSSProperties, SVGProps } from "react";
+import Image from "next/image";
 import {
   SiAnthropic,
   SiApacheairflow,
@@ -141,15 +142,30 @@ export const techIcons: Record<string, TechIconDef> = {
 
 export function TechIcon({
   icon,
+  iconUrl,
   color,
   name,
   className = "size-4",
 }: {
   icon: string | null;
+  /** Imagem enviada no painel: tem prioridade sobre o catálogo. */
+  iconUrl?: string | null;
   color?: string | null;
   name: string;
   className?: string;
 }) {
+  if (iconUrl) {
+    return (
+      <Image
+        src={iconUrl}
+        alt=""
+        aria-hidden
+        width={72}
+        height={72}
+        className={`${className} object-contain`}
+      />
+    );
+  }
   const def = icon ? techIcons[icon] : undefined;
   if (!def) {
     // Sem logo no catálogo: monograma com a inicial

@@ -42,6 +42,16 @@ function safeUrl(value: string, label: string, { allowMailto = false } = {}) {
   throw new ValidationError(`${label}: URL inválida (use https://...)`);
 }
 
+function isMediaUrl(value: string) {
+  try {
+    const u = new URL(value);
+    const base = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL!);
+    return u.origin === base.origin && u.pathname.startsWith("/storage/v1/object/public/media/");
+  } catch {
+    return false;
+  }
+}
+
 async function run(fn: () => Promise<string>): Promise<ActionState> {
   try {
     const message = await fn();
@@ -194,9 +204,13 @@ export async function saveTechnology(_: ActionState, fd: FormData): Promise<Acti
     if (!name) throw new ValidationError("Informe o nome");
     const color = str(fd, "color");
     if (color && !/^#[0-9a-fA-F]{6}$/.test(color)) throw new ValidationError("Cor: use o formato #RRGGBB");
+    // Ícone próprio: só imagens enviadas para o nosso bucket `media`
+    const iconUrl = str(fd, "icon_url");
+    if (iconUrl && !isMediaUrl(iconUrl)) throw new ValidationError("Ícone: envie a imagem pelo painel");
     const row = {
       name,
-      icon: nullable(str(fd, "icon")),
+      icon: iconUrl ? null : nullable(str(fd, "icon")),
+      icon_url: nullable(iconUrl),
       color: nullable(color),
       category: str(fd, "category") || "tools",
       show_in_stack: bool(fd, "show_in_stack"),
@@ -316,13 +330,52 @@ export async function setMessagesRead(ids: string[], read: boolean) {
   });
 }
 
-export async function deleteMessages(ids: string[]) {
+const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+
+/** Excluir = mover para a lixeira. O banco apaga de vez depois de 30 dias (pg_cron, migration 0008). */
+export async function trashMessages(ids: string[]) {
   return run(async () => {
     const valid = messageIds(ids);
     const { supabase } = await requireAdmin();
-    check((await supabase.from("contact_messages").delete().in("id", valid)).error);
-    const n = valid.length;
-    return `${n} mensage${n === 1 ? "m excluída" : "ns excluídas"}`;
+    check(
+      (
+        await supabase
+          .from("contact_messages")
+          .update({ deleted_at: new Date().toISOString() })
+          .in("id", valid)
+          .is("deleted_at", null)
+      ).error,
+    );
+    return `${plural(valid.length, "mensagem movida", "mensagens movidas")} para a lixeira`;
+  });
+}
+
+export async function restoreMessages(ids: string[]) {
+  return run(async () => {
+    const valid = messageIds(ids);
+    const { supabase } = await requireAdmin();
+    check((await supabase.from("contact_messages").update({ deleted_at: null }).in("id", valid)).error);
+    return `${plural(valid.length, "mensagem restaurada", "mensagens restauradas")}`;
+  });
+}
+
+/** Apagar definitivamente: só o que já está na lixeira. */
+export async function purgeMessages(ids: string[]) {
+  return run(async () => {
+    const valid = messageIds(ids);
+    const { supabase } = await requireAdmin();
+    check(
+      (await supabase.from("contact_messages").delete().in("id", valid).not("deleted_at", "is", null)).error,
+    );
+    return `${plural(valid.length, "mensagem apagada", "mensagens apagadas")} definitivamente`;
+  });
+}
+
+export async function emptyTrash() {
+  return run(async () => {
+    const { supabase } = await requireAdmin();
+    check((await supabase.from("contact_messages").delete().not("deleted_at", "is", null)).error);
+    return "Lixeira esvaziada";
   });
 }
 

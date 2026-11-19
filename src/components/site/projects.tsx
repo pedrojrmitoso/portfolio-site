@@ -18,7 +18,13 @@ export function Projects({ data, dict, locale }: { data: Portfolio; dict: Dictio
       demo: p.demo_url,
       repo: p.repo_url,
       featured: p.featured,
-      techs: p.technologies.map((t) => ({ id: t.id, name: t.name, icon: t.icon, color: t.color })),
+      techs: p.technologies.map((t) => ({
+        id: t.id,
+        name: t.name,
+        icon: t.icon,
+        icon_url: t.icon_url,
+        color: t.color,
+      })),
     };
   });
 

@@ -2,13 +2,14 @@ import { Download } from "lucide-react";
 import { getDictionary, getLocale } from "@/i18n/get-dictionary";
 import { getPortfolio } from "@/lib/data";
 import { tr } from "@/lib/i18n-text";
+import { resumeHref } from "@/lib/resume";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { LanguageSwitcher } from "./language-switcher";
 import { MobileMenu } from "./mobile-menu";
 
 export async function SiteHeader() {
   const [dict, locale, data] = await Promise.all([getDictionary(), getLocale(), getPortfolio()]);
-  const resume = tr(data.profile?.resume_url, locale) || null;
+  const resume = resumeHref(tr(data.profile?.resume_url, locale), locale);
   const firstName = data.profile?.full_name.split(" ")[0]?.toLowerCase() || "portfolio";
   const links = [
     { href: "#about", label: dict.nav.about },
@@ -34,8 +35,8 @@ export async function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <div className="hidden items-center gap-2 sm:flex">
-            <LanguageSwitcher current={locale} label={dict.language} />
+          <LanguageSwitcher current={locale} label={dict.language} />
+          <div className="hidden sm:flex">
             <ThemeToggle labels={dict.theme} />
           </div>
           {resume && (
@@ -56,7 +57,6 @@ export async function SiteHeader() {
             labels={{ menu: dict.nav.menu, close: dict.nav.close, resume: dict.hero.cta_resume }}
             controls={
               <div className="flex flex-wrap items-center gap-3 sm:hidden">
-                <LanguageSwitcher current={locale} label={dict.language} large />
                 <ThemeToggle labels={dict.theme} large />
               </div>
             }
