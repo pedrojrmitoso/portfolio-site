@@ -5,6 +5,7 @@ import { Check, Loader2, Send, TriangleAlert } from "lucide-react";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import type { Locale } from "@/i18n/config";
 import { sendContactMessage, type ContactState } from "@/app/(site)/[lang]/actions";
+import { Turnstile, type TurnstileHandle } from "./turnstile";
 
 type FormDict = Dictionary["contact"]["form"];
 
@@ -16,6 +17,7 @@ export function ContactForm({ dict, locale }: { dict: FormDict; locale: Locale }
   const [state, action, pending] = useActionState<ContactState, FormData>(sendContactMessage, null);
   const formRef = useRef<HTMLFormElement>(null);
   const startedAt = useRef<HTMLInputElement>(null);
+  const captcha = useRef<TurnstileHandle>(null);
 
   // Marca quando o formulário apareceu no navegador (a página é estática, então não pode vir do servidor)
   useEffect(() => {
@@ -24,6 +26,8 @@ export function ContactForm({ dict, locale }: { dict: FormDict; locale: Locale }
 
   useEffect(() => {
     if (state?.status === "ok") formRef.current?.reset();
+    // Token do Turnstile vale um envio só: pede outro para a próxima tentativa
+    if (state) captcha.current?.reset();
   }, [state]);
 
   const error = state?.status === "error" ? dict[`error_${state.code}`] : null;
@@ -72,6 +76,8 @@ export function ContactForm({ dict, locale }: { dict: FormDict; locale: Locale }
           className={`${inputCls} resize-y`}
         />
       </label>
+
+      <Turnstile ref={captcha} language={locale} />
 
       <div className="flex flex-wrap items-center gap-4 sm:col-span-2">
         <button

@@ -80,6 +80,7 @@
       "error_invalid": "Please check the fields: name, a valid email and a message of at least 10 characters.",
       "error_rate": "Too many messages in a short time. Try again later or use the links.",
       "error_server": "Could not send right now. Try again or use the links.",
+      "error_captcha": "We couldn't confirm you're not a robot. Reload the page and try again.",
       "or_direct": "Or reach out directly"
     }
   },

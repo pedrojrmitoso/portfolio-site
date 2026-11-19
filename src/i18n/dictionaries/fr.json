@@ -80,6 +80,7 @@
       "error_invalid": "Vérifiez les champs : nom, e-mail valide et message d’au moins 10 caractères.",
       "error_rate": "Trop de messages en peu de temps. Réessayez plus tard ou utilisez les liens.",
       "error_server": "Envoi impossible pour le moment. Réessayez ou utilisez les liens.",
+      "error_captcha": "Impossible de confirmer que vous n’êtes pas un robot. Rechargez la page et réessayez.",
       "or_direct": "Ou contactez-moi directement"
     }
   },

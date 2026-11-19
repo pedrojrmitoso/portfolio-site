@@ -7,8 +7,9 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createPublicClient } from "@/lib/supabase/public";
 import { notifyNewMessage, projectTypes, type ProjectType } from "@/lib/contact-notify";
 import { hasLocale } from "@/i18n/config";
+import { verifyTurnstile } from "@/lib/turnstile";
 
-export type ContactState = { status: "ok" } | { status: "error"; code: "invalid" | "rate" | "server" } | null;
+export type ContactState = { status: "ok" } | { status: "error"; code: "invalid" | "rate" | "server" | "captcha" } | null;
 
 /** Rígido de propósito: nada de ?, &, = ou # (viram parâmetros no mailto do painel). Igual à migration 0007. */
 const EMAIL = /^[a-z0-9._+-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/;
@@ -46,15 +47,26 @@ export async function sendContactMessage(_: ContactState, fd: FormData): Promise
   const ip = h.get("x-real-ip")?.trim() || h.get("x-forwarded-for")?.split(",").pop()?.trim() || "";
   const ipHash = ip ? createHash("sha256").update(`contact:${ip}`).digest("hex") : null;
 
+  // O campo "t" vem do navegador e pode ser forjado; o Turnstile é o filtro de robô de verdade
+  if (!(await verifyTurnstile(field("cf-turnstile-response"), ip || null))) {
+    return { status: "error", code: "captcha" };
+  }
+
   // Chave secreta: a função não é pública (migration 0009), então o hash do IP vem sempre daqui
-  const { error } = await createAdminClient().rpc("submit_contact_message", {
-    p_name: name,
-    p_email: email,
-    p_project_type: projectType,
-    p_message: message,
-    p_locale: locale,
-    p_ip_hash: ipHash,
-  });
+  let error: { message: string } | null;
+  try {
+    ({ error } = await createAdminClient().rpc("submit_contact_message", {
+      p_name: name,
+      p_email: email,
+      p_project_type: projectType,
+      p_message: message,
+      p_locale: locale,
+      p_ip_hash: ipHash,
+    }));
+  } catch (e) {
+    // Chave ausente ou falha de rede: responde erro em vez de quebrar a action sem mensagem
+    error = { message: e instanceof Error ? e.message : String(e) };
+  }
   if (error) {
     if (error.message.includes("rate_limited")) return { status: "error", code: "rate" };
     console.error("contact:", error.message);

@@ -80,6 +80,7 @@
       "error_invalid": "Confira os campos: nome, e-mail válido e mensagem com pelo menos 10 caracteres.",
       "error_rate": "Muitas mensagens em pouco tempo. Tente de novo mais tarde ou use os links ao lado.",
       "error_server": "Não foi possível enviar agora. Tente de novo ou use os links ao lado.",
+      "error_captcha": "Não conseguimos confirmar que você não é um robô. Recarregue a página e tente de novo.",
       "or_direct": "Ou fale direto"
     }
   },
